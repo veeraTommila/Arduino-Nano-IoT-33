@@ -1,25 +1,25 @@
 // Veera Tommila. veera.tommila@gmail.com
-// Harjoitus 3. Keskeytysrutiinilla lämpötilan ja kosteuden mittaus ainoastaan.
+// Harjoitus 3. Lämpötilan ja kosteuden mittaus keskeytysrutiinilla MetroM4-alustalla.
 #include "Adafruit_SHTC3.h"
 #include "Adafruit_VL53L0X.h"
 
 const int PwrSht = 12;
-Adafruit_SHTC3 shtc3 = Adafruit_SHTC3();  //Oliomuuttuja  SHT:lle, jolla viitataan anturiin.
-Adafruit_VL53L0X lox = Adafruit_VL53L0X();  //Lox on anturiin viittava olio.
+Adafruit_SHTC3 shtc3 = Adafruit_SHTC3();  // Oliomuuttuja  SHT:lle, jolla viitataan anturiin.
+Adafruit_VL53L0X lox = Adafruit_VL53L0X();  // Lox on anturiin viittava olio.
 
-int ledRed = 7; // LED connected to digital pin 7
-int Button2 = 3;    // pushbutton connected to digital pin 3
+int ledRed = 7; // LED, joka on yhdistetty digitaalipinniin nro. 7
+int Button2 = 3;    // painonappi, joka on yhdistetty digitaalipinniin nro. 3
 int buttonPushCounter = 0; // Used in the switch statement below
 
-long time = 0; // Time since last action occured 
-long debounce = 200; // Debounce time to increase if the output is flickering
+long time = 0; // Aika edellisestä toimenpiteestä.
+long debounce = 200; // Palautusaika kasvaa, jos tulos vilkkuu.
 
-volatile byte state_Button2 = LOW;  //Pitäisi olla napin tilatietomuuttuja, joka on käynnistyksessä 0.
-volatile byte state_red = LOW;  //Punaisen LED-lampun tilatietomuuttuja, joka on käynnistyksessä 0.
+volatile byte state_Button2 = LOW;  // Pitäisi olla napin tilatietomuuttuja, joka on käynnistyksessä 0.
+volatile byte state_red = LOW;  // Punaisen LED-lampun tilatietomuuttuja, joka on käynnistyksessä 0.
 
 void setup() {
   pinMode(PwrSht, OUTPUT);
-  pinMode(ledRed, OUTPUT);  // sets the digital pin 7 as output
+  pinMode(ledRed, OUTPUT);  // Asetetaan digitaalipinni 7 output-pinniksi.
   digitalWrite(PwrSht, HIGH);
   Serial.begin(115200);
 
@@ -37,7 +37,7 @@ void setup() {
   }
   
   Serial.println("Löydettiin SHTC3-anturi"); // Jos käynnistys onnistuu. Ilmoitetaan anturin löytymisestä.    
-  pinMode(Button2, INPUT_PULLUP);    // sets the digital pin 3 as input
+  pinMode(Button2, INPUT_PULLUP);    // Asetetaan digitaalipinni 3 input-pinniksi.
 // power 
   Serial.println(F("VL53L0X API Simple Ranging example\n\n")); 
  //attachInterrupt(digitalPinToInterrupt(ledRed), keskeytys, CHANGE);  //Keskeytysmääritys painonapille 1, joka IO-tulona aiheuttaa keskeytyksen. Kutsutaan ohjelmaa alarm. Missä kohtaa keskeytys tapahtuu (falling, rising tai change).
@@ -56,7 +56,7 @@ void loop() {
   //Serial.print("Luetaan mittauksia... ");
   lox.rangingTest(&measure, false); // pass in 'true' to get debug data printout!
 
-  Serial.print("Etäisyys (mm): "); Serial.println(measure.RangeMilliMeter);    //Mitataan ja tulostetaan arvo.
+  Serial.print("Etäisyys (mm): "); Serial.println(measure.RangeMilliMeter);    // Mitataan ja tulostetaan arvo.
 
 //     
   if (measure.RangeMilliMeter >= 20 && measure.RangeMilliMeter <= 500) {
@@ -64,7 +64,7 @@ void loop() {
     state_red = !state_red;  
   } else {
     delay(500);
-    Serial.print("Etäisyys (mm): "); Serial.println(measure.RangeMilliMeter);    //Mitataan ja tulostetaan arvo.
+    Serial.print("Etäisyys (mm): "); Serial.println(measure.RangeMilliMeter);    // Mitataan ja tulostetaan arvo.
     state_red = state_red;         
   }  
 }
